@@ -23,13 +23,3 @@ jobs:
 
       - name: Verify AWS identity
         run: aws sts get-caller-identity
-
-      - name: Check AWS region
-        run: aws configure get region
-
-      - name: List EC2 instances
-        run: |
-          aws ec2 describe-instances \
-          --region ap-south-1 \
-          --query "Reservations[].Instances[].{Name:Tags[?Key=='Name']|[0].Value,InstanceId:InstanceId,State:State.Name}" \
-          --output table
