@@ -3,13 +3,9 @@ name: AWS Connection Test
 on:
   workflow_dispatch:
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   aws-test:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Windows, X64]
 
     steps:
       - name: Checkout repository
@@ -18,8 +14,12 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::202235482285:role/fullrolegit
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
 
-      - name: Verify AWS identity
+      - name: Verify AWS Connection
         run: aws sts get-caller-identity
+
+      - name: List EC2
+        run: aws ec2 describe-instances --region ap-south-1 --output table
